@@ -1,5 +1,6 @@
 package com.example.devexpert
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +13,11 @@ import com.bumptech.glide.Glide
 class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapter.ViewHolder>(){
 
 
-    //Crear una vira cuando el recyclerview se lo pida
+    //Crear una vista cuando el recyclerview se lo pida
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         //Inflar la vista
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.view_media_item,parent,false)
-
+        val view = parent.inflate(R.layout.view_media_item)
         return ViewHolder(view)
 
     }
@@ -30,17 +28,21 @@ class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapt
         holder.bind(item)
     }
 
-    // Obtenemos el numero de elementos que tiene el adapter
+    // Obtenemos el número de elementos que tiene el adapter
     override fun getItemCount(): Int = items.size
 
     class ViewHolder(view:View): RecyclerView.ViewHolder(view){
 
         private val title:TextView = view.findViewById(R.id.mediaTitle)
-        private val thum:ImageView = view.findViewById(R.id.mediaThumb)
+        private val thumb:ImageView = view.findViewById(R.id.mediaThumb)
 
         fun bind(mediaItem: MediaItem){
             title.text = mediaItem.title
-            Glide.with(thum).load(mediaItem.url).into(thum)
+            thumb.loadUrl(mediaItem.url)
+
+            itemView.setOnClickListener {
+                toast("function of extension")
+            }
         }
     }
 

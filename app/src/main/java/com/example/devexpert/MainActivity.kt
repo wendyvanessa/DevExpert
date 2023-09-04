@@ -16,5 +16,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.recycler.adapter = MediaAdapter(getItems())
 
+        binding.recycler.setOnClickListener {
+            toast("Hello this is function of extension")
+        }
+
+        this.startActivity<MainActivity>()
+
     }
 }
