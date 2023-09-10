@@ -1,6 +1,9 @@
 package com.example.devexpert
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 
 // Paradigma de programación funcional
@@ -12,4 +15,8 @@ fun test(context: Context){
     x = "Wendyyyyyyyy"
 
     Toast.makeText(context,"$x", Toast.LENGTH_SHORT).show()
+}
+
+fun test(view:View){
+
 }

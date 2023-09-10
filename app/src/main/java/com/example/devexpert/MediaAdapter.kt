@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.devexpert.databinding.ViewMediaItemBinding
 
 class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapter.ViewHolder>(){
 
@@ -17,6 +18,9 @@ class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapt
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         //Inflar la vista
+        //val binding = ViewMediaItemBinding.inflate(LayoutInflater.from(parent.context))
+        //return ViewHolder(binding.root)
+
         val view = parent.inflate(R.layout.view_media_item)
         return ViewHolder(view)
 
@@ -33,16 +37,23 @@ class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapt
 
     class ViewHolder(view:View): RecyclerView.ViewHolder(view){
 
-        private val title:TextView = view.findViewById(R.id.mediaTitle)
-        private val thumb:ImageView = view.findViewById(R.id.mediaThumb)
+        val binding = ViewMediaItemBinding.bind(view)
 
         fun bind(mediaItem: MediaItem){
-            title.text = mediaItem.title
-            thumb.loadUrl(mediaItem.url)
+            binding.mediaTitle.text = mediaItem.title
+            binding.mediaThumb.loadUrl(mediaItem.url)
+
+            binding.mediaVideoIndicator.visibility = when(mediaItem.type){
+                MediaItem.Type.PHOTO -> View.GONE
+                MediaItem.Type.VIDEO -> View.VISIBLE
+            }
+
 
             itemView.setOnClickListener {
                 toast("function of extension")
             }
+
+
         }
     }
 

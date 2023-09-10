@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
             toast("Hello this is function of extension")
         }
 
-        this.startActivity<MainActivity>()
+       // this.startActivity<MainActivity>()
 
     }
 }
