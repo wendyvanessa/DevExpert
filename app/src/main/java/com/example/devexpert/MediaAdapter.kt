@@ -11,7 +11,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.devexpert.databinding.ViewMediaItemBinding
 
-class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapter.ViewHolder>(){
+interface Listener {
+    fun onClick(mediaItem: MediaItem)
+}
+
+/**
+ * Para mejorar la  implementación de la interface Listener que se detalla acontinuación:
+ * class MediaAdapter(val items:List<MediaItem>, private val listener: Listener) :
+ * se crea una lambda que rebe un MediaItem y no devuelve nada,
+ * con ello no hay necesidad de pasar la función creada en la interface y reducimos el codigo
+ *
+ */
+class MediaAdapter(val items:List<MediaItem>, private val listener: (MediaItem)-> Unit ) :
+    RecyclerView.Adapter<MediaAdapter.ViewHolder>(){
 
 
     //Crear una vista cuando el recyclerview se lo pida
@@ -30,6 +42,7 @@ class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
+        holder.itemView.setOnClickListener { listener(item) }
     }
 
     // Obtenemos el número de elementos que tiene el adapter
@@ -46,11 +59,6 @@ class MediaAdapter(val items:List<MediaItem> ) : RecyclerView.Adapter<MediaAdapt
             binding.mediaVideoIndicator.visibility = when(mediaItem.type){
                 MediaItem.Type.PHOTO -> View.GONE
                 MediaItem.Type.VIDEO -> View.VISIBLE
-            }
-
-
-            itemView.setOnClickListener {
-                toast("function of extension")
             }
 
 
