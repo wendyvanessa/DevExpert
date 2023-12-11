@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import com.example.devexpert.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +17,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), CoroutineScope{
+class MainActivity : AppCompatActivity(){
 
     lateinit var binding: ActivityMainBinding
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    private lateinit var job: Job
 
 /**
  * @lazy utilizado para posponer la inicialización de MediaAdapter
@@ -39,7 +35,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        job = SupervisorJob()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,7 +50,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope{
     }
 
     fun updateItems(filter: Int = R.id.filter_all){
-        launch {
+        lifecycleScope.launch {
             binding.progress.visibility = View.VISIBLE
             adapter.items  = withContext(Dispatchers.IO){ getFilteredItems(filter) }
             binding.progress.visibility = View.GONE
@@ -81,12 +76,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope{
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
      adapter.items = getFilteredItems(item.itemId)
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        // Cuando la actividad se cancela, las corrutinas asociadas a este job se cancelan igual
-        job.cancel()
-        super.onDestroy()
     }
 }
 
