@@ -2,12 +2,25 @@ package com.example.devexpert
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import com.example.devexpert.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+/**
+ * @lazy utilizado para posponer la inicialización de MediaAdapter
+ * hasta que se llame por primera vez a Adapter.
+ *
+ *  No es necesario iniciarlo hasta que realmente se necesita.
+ */
+    private val adapter by lazy {
+        MediaAdapter(getItems.ListItems) {mediaItem->
+            toast(mediaItem.title)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,9 +28,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.recycler.adapter = MediaAdapter(getItems()) {mediaItem->
-            toast(mediaItem.title)
-        }
+        binding.recycler.adapter = adapter
+
 
         val textView:TextView = TextView(this).apply2{
             text =  "Hello"
@@ -26,6 +38,25 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+     adapter.items = getItems.ListItems.let { media ->
+         when(item.itemId){
+            R.id.filter_photos -> media.filter { it.type == MediaItem.Type.PHOTO }
+            R.id.filter_videos -> media.filter { it.type == MediaItem.Type.VIDEO }
+            R.id.filter_all -> media
+            else -> emptyList()
+         }
+     }
+
+        return super.onOptionsItemSelected(item)
+    }
+
 }
 
 /**

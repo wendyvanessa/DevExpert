@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.devexpert.databinding.ViewMediaItemBinding
+import kotlin.properties.Delegates
 
 interface Listener {
     fun onClick(mediaItem: MediaItem)
@@ -22,8 +23,16 @@ interface Listener {
  * con ello no hay necesidad de pasar la función creada en la interface y reducimos el codigo
  *
  */
-class MediaAdapter(val items:List<MediaItem>, private val listener: (MediaItem)-> Unit ) :
+class MediaAdapter(
+    items:List<MediaItem> = emptyList(),
+    private val listener: (MediaItem)-> Unit
+) :
     RecyclerView.Adapter<MediaAdapter.ViewHolder>(){
+
+    // Se actualizara la vista cada vez que la lista de items se mencione
+    var items:List<MediaItem> by Delegates.observable(items) { _,_,_ ->
+        notifyDataSetChanged()
+    }
 
 
     //Crear una vista cuando el recyclerview se lo pida

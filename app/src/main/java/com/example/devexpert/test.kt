@@ -5,6 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // Paradigma de programación funcional
 
@@ -39,3 +43,16 @@ fun sum(x:Int, y: Int): Int = x + y
 fun doOp(x:Int, y: Int, op:(Int, Int) -> Int) {
     op(x,y)
 }
+
+/**
+ * Las funciones también se pueden pasar como referencia
+ * agregando al parametro doble dso puntos ::sum
+ */
+fun testCorrutina(viewGroup: ViewGroup){
+    GlobalScope.launch(Dispatchers.Main) {
+        val result = withContext(Dispatchers.IO){ heavytask()}
+    }
+
+}
+
+fun heavytask(): String = "Hello"
