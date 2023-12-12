@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(){
  */
     private val adapter by lazy {
         MediaAdapter() {mediaItem->
-            toast(mediaItem.title)
+            startActivity<DetailActivity>(DetailActivity.EXTRA_ID to mediaItem.id)
         }
     }
 

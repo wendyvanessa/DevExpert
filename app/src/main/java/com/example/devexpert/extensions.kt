@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
@@ -45,8 +46,19 @@ fun ImageView.loadUrl(url: String){
  * Reifield permite que el acceso a los tipos genericos en tiempo de ejecución.
  * Los tipos genericos <> permiten la utilización de diferentes tipos de datos
  * en este caso un Activity
+ *
+ * @Any es para referirse a cualquier tipo de dato no nulable.
+ *
+ * @Pair es para agrupar dos elementos de diferentes tipos, en este caso
+ * un string y any.
+ *
+ * @vararg es para recibir una cantidad invariable de parametros en este caso del tipo Pair, es
+ * como una matriz de datos.
+ *
+ *
  */
-inline fun <reified T: Activity> Context.startActivity(){
-    val intent = Intent(this,T::class.java)
-    startActivity(intent)
+inline fun <reified T: Activity> Context.startActivity(vararg pairs: Pair<String, Any?>){
+    Intent(this,T::class.java)
+        .apply2 { putExtras(bundleOf(*pairs)) }
+        .also(::startActivity)
 }
