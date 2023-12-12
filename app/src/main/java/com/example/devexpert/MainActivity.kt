@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity(){
 
     }
 
-    fun updateItems(filter: Int = R.id.filter_all){
+    fun updateItems(filter: Filter = Filter.None){
         lifecycleScope.launch {
             binding.progress.visibility = View.VISIBLE
             adapter.items  = withContext(Dispatchers.IO){ getFilteredItems(filter) }
@@ -57,13 +57,19 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    private  fun getFilteredItems(filter: Int): List<MediaItem>{
+    /**
+     * @filter es el tipo de dato ->
+     *      Filter.ByType(MediaItem.Type.PHOTO)
+     *      Filter.ByType(MediaItem.Type.VIDEO)
+     *      Filter.None
+     *
+     * Definimos que mostrar al usuario dependiendo del tipo de dato que entre
+     */
+    private  fun getFilteredItems(filter:Filter): List<MediaItem>{
         return MediaProvider.getItems().let { media ->
             when(filter){
-                R.id.filter_photos -> media.filter { it.type == MediaItem.Type.PHOTO }
-                R.id.filter_videos -> media.filter { it.type == MediaItem.Type.VIDEO }
-                R.id.filter_all -> media
-                else -> emptyList()
+                Filter.None-> media
+                is Filter.ByType -> media.filter { it.type == filter.type }
             }
         }
     }
@@ -74,7 +80,13 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-     adapter.items = getFilteredItems(item.itemId)
+        val filter =  when(item.itemId) {
+            R.id.filter_photos -> Filter.ByType(MediaItem.Type.PHOTO)
+            R.id.filter_videos -> Filter.ByType(MediaItem.Type.VIDEO)
+            else -> Filter.None
+        }
+
+        updateItems(filter)
         return super.onOptionsItemSelected(item)
     }
 }
