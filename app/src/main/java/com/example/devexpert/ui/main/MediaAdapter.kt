@@ -1,15 +1,13 @@
-package com.example.devexpert
+package com.example.devexpert.ui.main
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.example.devexpert.R
+import com.example.devexpert.data.MediaItem
 import com.example.devexpert.databinding.ViewMediaItemBinding
+import com.example.devexpert.ui.inflate
+import com.example.devexpert.ui.loadUrl
 import kotlin.properties.Delegates
 
 interface Listener {
@@ -30,7 +28,7 @@ class MediaAdapter(
     RecyclerView.Adapter<MediaAdapter.ViewHolder>(){
 
     // Se actualizara la vista cada vez que la lista de items se mencione
-    var items:List<MediaItem> by Delegates.observable(items) { _,_,_ ->
+    var items:List<MediaItem> by Delegates.observable(items) { _, _, _ ->
         notifyDataSetChanged()
     }
 

@@ -1,7 +1,7 @@
-package com.example.devexpert
+package com.example.devexpert.data
 
 import androidx.annotation.WorkerThread
-import com.example.devexpert.MediaItem.*
+import com.example.devexpert.data.MediaItem.*
 
 object MediaProvider {
     /**

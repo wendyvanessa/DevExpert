@@ -1,10 +1,13 @@
-package com.example.devexpert
+package com.example.devexpert.ui.detail
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import com.example.devexpert.data.MediaItem
+import com.example.devexpert.data.MediaProvider
 import com.example.devexpert.databinding.ActivityDetailBinding
+import com.example.devexpert.ui.loadUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
