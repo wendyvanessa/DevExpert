@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "devExpert"
-include ':app'
+include (":app")
