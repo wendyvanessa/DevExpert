@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.example.devexpert.ui.detail.DetailActivity
 import com.example.devexpert.R
 import com.example.devexpert.data.Filter
@@ -13,10 +15,10 @@ import com.example.devexpert.data.MediaItem
 import com.example.devexpert.databinding.ActivityMainBinding
 import com.example.devexpert.ui.startActivity
 
-class MainActivity : AppCompatActivity(), MainPresenter.View{
+class MainActivity : AppCompatActivity(){
 
     lateinit var binding: ActivityMainBinding
-    private  val mainPresenter = MainPresenter(this,lifecycleScope)
+    private lateinit var  viewModel: MainViewModel
 
 /**
  * @lazy utilizado para posponer la inicialización de MediaAdapter
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity(), MainPresenter.View{
  */
     private val adapter by lazy {
         MediaAdapter() {mediaItem->
-            mainPresenter.onMediaItemClicked(mediaItem)
+            viewModel.onMediaItemClicked(mediaItem)
         }
     }
 
@@ -35,8 +37,21 @@ class MainActivity : AppCompatActivity(), MainPresenter.View{
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        /**
+         * Pasamos @this para indicar que en esta actividad se almacenará el viewModel
+         * la instancia de MainViewModel seguira el siclo de vida de MainActivity
+         */
+        viewModel = ViewModelProvider(this).get()
+        viewModel.progressLiveData.observe(this, Observer {
+            binding.progress.visibility = if (it) View.VISIBLE else View.GONE
+        })
+        viewModel.itemsLiveData.observe(this, Observer{ adapter.items = it })
+        viewModel.navigateToDetail.observe(this, Observer {
+            startActivity<DetailActivity>(DetailActivity.EXTRA_ID to it)
+        })
+
         binding.recycler.adapter = adapter
-        mainPresenter.updateItems()
+        viewModel.updateItems()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -51,19 +66,7 @@ class MainActivity : AppCompatActivity(), MainPresenter.View{
             else -> Filter.None
         }
 
-        mainPresenter.updateItems(filter)
+        viewModel.updateItems(filter)
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun setProgressVisible(visible: Boolean) {
-        binding.progress.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    override fun updateItems(items: List<MediaItem>) {
-        adapter.items = items
-    }
-
-    override fun navigateToDetail(id: Int) {
-        startActivity<DetailActivity>(DetailActivity.EXTRA_ID to id)
     }
 }

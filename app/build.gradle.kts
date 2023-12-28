@@ -45,7 +45,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.5.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation ("androidx.recyclerview:recyclerview:1.3.0")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5")
     kapt ("com.github.bumptech.glide:compiler:4.11.0")
