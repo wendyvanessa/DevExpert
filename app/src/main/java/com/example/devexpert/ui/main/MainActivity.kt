@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.example.devexpert.ui.detail.DetailActivity
 import com.example.devexpert.R
 import com.example.devexpert.data.Filter
 import com.example.devexpert.data.MediaItem
 import com.example.devexpert.databinding.ActivityMainBinding
+import com.example.devexpert.ui.getViewModel
+import com.example.devexpert.ui.observe
 import com.example.devexpert.ui.startActivity
 
 class MainActivity : AppCompatActivity(){
@@ -37,19 +36,7 @@ class MainActivity : AppCompatActivity(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /**
-         * Pasamos @this para indicar que en esta actividad se almacenará el viewModel
-         * la instancia de MainViewModel seguira el siclo de vida de MainActivity
-         */
-        viewModel = ViewModelProvider(this).get()
-        viewModel.progressLiveData.observe(this, Observer {
-            binding.progress.visibility = if (it) View.VISIBLE else View.GONE
-        })
-        viewModel.itemsLiveData.observe(this, Observer{ adapter.items = it })
-        viewModel.navigateToDetail.observe(this, Observer {
-            startActivity<DetailActivity>(DetailActivity.EXTRA_ID to it)
-        })
-
+        observers()
         binding.recycler.adapter = adapter
         viewModel.updateItems()
     }
@@ -68,5 +55,24 @@ class MainActivity : AppCompatActivity(){
 
         viewModel.updateItems(filter)
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * Se crea la instancia del MainViewModel por medio de una función de extensión "getViewModel"
+     * la cual implementa como parametro la función de extención "observe"
+     *
+     * Las funciones de extensión con tipos de datos genericos  son utilizadas para
+     * eliminar boilerplate del codigo quedando mucho mas legible.
+     */
+    fun observers(){
+        viewModel = getViewModel {
+            observe(progressLiveData){
+                binding.progress.visibility = if (it) View.VISIBLE else View.GONE
+            }
+            observe(itemsLiveData){ adapter.items = it }
+            observe(navigateToDetail){
+                startActivity<DetailActivity>(DetailActivity.EXTRA_ID to it)
+            }
+        }
     }
 }

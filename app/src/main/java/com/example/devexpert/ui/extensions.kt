@@ -10,6 +10,13 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.get
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.devexpert.R
@@ -64,6 +71,35 @@ inline fun <reified T: Activity> Context.startActivity(vararg pairs: Pair<String
         .also(::startActivity)
 }
 
+/**
+ * Vamos a simplificar esta linea de codigo "ViewModelProvider(this).get()"
+ * cada vez que sea necesario simplemente llamamos getViewModel()
+ *
+ * @inline y @reified permite acceder a la función generica en tiempo de ejecución
+ *
+ * la función retorna un generico de tipo ViewModel,
+ * get<T>()le esta diciendo al compilador que se espera un ViewModel del tipo T.
+ *
+ * @getViewModel(body: T.() -> Unit) este argumento es una lambda que se aplica después de
+ * utilizar la instancia del viewModel
+ *
+ * @this es el argumento que indica en que actividad se almacenará el viewModel
+ *
+ * la instancia de MainViewModel seguira el siclo de vida de la actividad donde
+ * la función de extensión sea llamada.
+ *
+ */
+
+inline fun <reified T : ViewModel> ViewModelStoreOwner.getViewModel(body: T.() -> Unit = {}): T {
+    return ViewModelProvider(this).get<T>().apply(body)
+}
+
+/**
+ * @observe es para crear los observadores de los liveData.
+ */
+fun <T> LifecycleOwner.observe(livedata: LiveData<T>, observer: (T) -> Unit){
+    livedata.observe(this, Observer(observer))
+}
 /**
  * Lambdas con receivers:
  * @<T> se delcara de tipo generica, y como las funciones de extención,

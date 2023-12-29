@@ -7,7 +7,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.example.devexpert.databinding.ActivityDetailBinding
+import com.example.devexpert.ui.getViewModel
 import com.example.devexpert.ui.loadUrl
+import com.example.devexpert.ui.observe
 
 class DetailActivity : AppCompatActivity() {
 
@@ -22,16 +24,18 @@ class DetailActivity : AppCompatActivity() {
         val binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        detailViewModel = ViewModelProvider(this).get()
-        detailViewModel.title.observe(this, Observer { supportActionBar?.title = it })
-        detailViewModel.url.observe(this, Observer { binding.detailThumb.loadUrl(it) })
-
-        detailViewModel.videoIndicatorVisible.observe(this, Observer {
-            binding.detailVideoIndicator.visibility = if(it) View.VISIBLE else View.GONE
-        })
-
+        observers(binding)
         val itemId = intent.getIntExtra(EXTRA_ID,-1)
         detailViewModel.onCreate(itemId)
 
+    }
+    fun observers(binding: ActivityDetailBinding){
+        detailViewModel = getViewModel{
+            observe(title){ supportActionBar?.title = it }
+            observe(url){ binding.detailThumb.loadUrl(it) }
+            observe(progressLiveData) { binding.progress.visibility = if (it) View.VISIBLE else View.GONE }
+            observe(videoIndicatorVisible){
+                binding.detailVideoIndicator.visibility = if(it) View.VISIBLE else View.GONE }
+        }
     }
 }
