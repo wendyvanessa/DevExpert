@@ -70,8 +70,10 @@ class MainActivity : AppCompatActivity(){
                 binding.progress.visibility = if (it) View.VISIBLE else View.GONE
             }
             observe(itemsLiveData){ adapter.items = it }
-            observe(navigateToDetail){
-                startActivity<DetailActivity>(DetailActivity.EXTRA_ID to it)
+            observe(navigateToDetail) {
+                it.getContentIfNotHandled()?.let { itemId ->
+                    startActivity<DetailActivity>(DetailActivity.EXTRA_ID to itemId)
+                }
             }
         }
     }
