@@ -6,11 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.devexpert.data.MediaItem
 import com.example.devexpert.data.MediaProvider
+import com.example.devexpert.data.MediaProviderImpl
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DetailViewModel: ViewModel() {
+class DetailViewModel(
+    private val mediProvider: MediaProvider = MediaProviderImpl,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+): ViewModel() {
 
     private val _title = MutableLiveData<String>()
     val title : LiveData<String> get() = _title
@@ -27,7 +32,7 @@ class DetailViewModel: ViewModel() {
     fun onCreate(itemId: Int){
         viewModelScope.launch {
             _progressLiveData.value = true
-            val items = withContext(Dispatchers.IO) { MediaProvider.getItems() }
+            val items = withContext(ioDispatcher) { mediProvider.getItems() }
             val item = items.firstOrNull{ it.id == itemId }
 
             item?.let {

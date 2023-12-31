@@ -7,12 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.devexpert.data.Filter
 import com.example.devexpert.data.MediaItem
 import com.example.devexpert.data.MediaProvider
+import com.example.devexpert.data.MediaProviderImpl
 import com.example.devexpert.ui.Event
+import kotlinx.coroutines.CloseableCoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel: ViewModel() {
+class MainViewModel(
+    private val mediProvider: MediaProvider = MediaProviderImpl,
+    private val ioDispatcher:  CoroutineDispatcher = Dispatchers.IO
+    ) : ViewModel() {
 
     /**
      * Por practica de codigo limpio
@@ -29,10 +35,10 @@ class MainViewModel: ViewModel() {
     val navigateToDetail: LiveData<Event<Int>> get() = _navigateToDetail
 
 
-    fun updateItems(filter: Filter = Filter.None){
+    fun onFilterClick(filter: Filter = Filter.None){
         viewModelScope.launch {
             _progressLiveData.value = true
-            _itemsLiveData.value = withContext(Dispatchers.IO){ getFilteredItems(filter) }
+            _itemsLiveData.value = withContext(ioDispatcher){ getFilteredItems(filter) }
             _progressLiveData.value = false
         }
     }
@@ -46,7 +52,7 @@ class MainViewModel: ViewModel() {
      * Definimos que mostrar al usuario dependiendo del tipo de dato que entre
      */
     private  fun getFilteredItems(filter: Filter): List<MediaItem>{
-        return MediaProvider.getItems().let { media ->
+        return mediProvider.getItems().let { media ->
             when(filter){
                 Filter.None-> media
                 is Filter.ByType -> media.filter { it.type == filter.type }

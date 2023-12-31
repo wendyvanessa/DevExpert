@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(){
 
         observers()
         binding.recycler.adapter = adapter
-        viewModel.updateItems()
+        viewModel.onFilterClick()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(){
             else -> Filter.None
         }
 
-        viewModel.updateItems(filter)
+        viewModel.onFilterClick(filter)
         return super.onOptionsItemSelected(item)
     }
 
