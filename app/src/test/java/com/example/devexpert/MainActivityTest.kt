@@ -33,7 +33,6 @@ class MainActivityTest {
 
     private lateinit var viewModel: MainViewModel
     private val fakeMediaProvider = FakeMediaProvider()
-    private val testDispatcher = TestCoroutineDispatcher()
 
     /**
      * @rule es una clase que nos permite reutilizar codigo antes y despues del test
@@ -41,27 +40,19 @@ class MainActivityTest {
      *
      */
     @get:Rule
+    val coroutinesTestRule = CoroutinesTestRule()
+
+    @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setUp(){
-        /**
-         * La libreria de testing de corrutinas permite crear el mainDistPatcher en el que corre
-         * la corrutina ya que en el test no puede correr en el hilo principal
-         */
-        Dispatchers.setMain(testDispatcher)
-        viewModel = MainViewModel(fakeMediaProvider, testDispatcher)
-    }
-
-    @After
-    fun tearDown(){
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
+        viewModel = MainViewModel(fakeMediaProvider, coroutinesTestRule.testDispatcher)
     }
 
     @Test
     fun`pregress is set visible when progressLiveData value changes`() =
-        testDispatcher.runBlockingTest {
+        coroutinesTestRule.testDispatcher.runBlockingTest {
             val observer = mock<Observer<Boolean>>()
             viewModel.progressLiveData.observeForever(observer)
 
@@ -71,7 +62,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun `navigates to detail when onItemClicked`() = testDispatcher.runBlockingTest {
+    fun `navigates to detail when onItemClicked`() = coroutinesTestRule.testDispatcher.runBlockingTest {
         val observer = mock<Observer<Event<Int>>>()
 
         viewModel.navigateToDetail.observeForever(observer)
@@ -83,7 +74,7 @@ class MainActivityTest {
 
     @Test
     fun `updates items onfilterClicked`(){
-        testDispatcher.runBlockingTest {
+        coroutinesTestRule.testDispatcher.runBlockingTest {
             val observer = mock<Observer<List<MediaItem>>>()
 
             viewModel.itemsLiveData.observeForever(observer)
