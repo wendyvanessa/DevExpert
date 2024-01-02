@@ -3,13 +3,10 @@ package com.example.devexpert.ui.detail
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.example.devexpert.databinding.ActivityDetailBinding
-import com.example.devexpert.ui.getViewModel
 import com.example.devexpert.ui.loadUrl
 import com.example.devexpert.ui.observe
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity() {
 
@@ -17,7 +14,7 @@ class DetailActivity : AppCompatActivity() {
         val EXTRA_ID = "DetailActivity:id"
     }
 
-    private lateinit var detailViewModel: DetailViewModel
+    private val detailViewModel: DetailViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +27,7 @@ class DetailActivity : AppCompatActivity() {
 
     }
     fun observers(binding: ActivityDetailBinding){
-        detailViewModel = getViewModel{
+        with(detailViewModel){
             observe(title){ supportActionBar?.title = it }
             observe(url){ binding.detailThumb.loadUrl(it) }
             observe(progressLiveData) { binding.progress.visibility = if (it) View.VISIBLE else View.GONE }

@@ -7,17 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.devexpert.data.Filter
 import com.example.devexpert.data.MediaItem
 import com.example.devexpert.data.MediaProvider
-import com.example.devexpert.data.MediaProviderImpl
 import com.example.devexpert.ui.Event
-import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainViewModel(
-    private val mediProvider: MediaProvider = MediaProviderImpl,
-    private val ioDispatcher:  CoroutineDispatcher = Dispatchers.IO
+    private val mediProvider: MediaProvider ,
+    private val ioDispatcher:  CoroutineDispatcher
     ) : ViewModel() {
 
     /**

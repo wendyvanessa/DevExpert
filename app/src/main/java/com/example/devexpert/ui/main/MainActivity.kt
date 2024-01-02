@@ -10,14 +10,14 @@ import com.example.devexpert.R
 import com.example.devexpert.data.Filter
 import com.example.devexpert.data.MediaItem
 import com.example.devexpert.databinding.ActivityMainBinding
-import com.example.devexpert.ui.getViewModel
 import com.example.devexpert.ui.observe
 import com.example.devexpert.ui.startActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(){
 
     lateinit var binding: ActivityMainBinding
-    private lateinit var  viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModel()
 
 /**
  * @lazy utilizado para posponer la inicialización de MediaAdapter
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(){
      * eliminar boilerplate del codigo quedando mucho mas legible.
      */
     fun observers(){
-        viewModel = getViewModel {
+        with(viewModel) {
             observe(progressLiveData){
                 binding.progress.visibility = if (it) View.VISIBLE else View.GONE
             }
