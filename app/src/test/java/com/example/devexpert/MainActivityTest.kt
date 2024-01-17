@@ -48,9 +48,9 @@ class MainActivityTest {
     @Test
     fun`pregress is set visible when progressLiveData value changes`() =
         coroutinesTestRule.testDispatcher.runBlockingTest {
+
             val observer = mock<Observer<Boolean>>()
             viewModel.progressLiveData.observeForever(observer)
-
             viewModel.onFilterClick(Filter.None)
 
             verify(observer).onChanged(true)
@@ -58,10 +58,9 @@ class MainActivityTest {
 
     @Test
     fun `navigates to detail when onItemClicked`() = coroutinesTestRule.testDispatcher.runBlockingTest {
+
         val observer = mock<Observer<Event<Int>>>()
-
         viewModel.navigateToDetail.observeForever(observer)
-
         viewModel.onMediaItemClicked(MediaItem(1,"","", Type.PHOTO))
 
         verify(observer).onChanged(Event(1))
@@ -70,12 +69,10 @@ class MainActivityTest {
     @Test
     fun `updates items onfilterClicked`(){
         coroutinesTestRule.testDispatcher.runBlockingTest {
+
             val observer = mock<Observer<List<MediaItem>>>()
-
             viewModel.itemsLiveData.observeForever(observer)
-
             viewModel.onFilterClick()
-
             verify(observer).onChanged(fakeMediaProvider.getItems())
         }
     }
